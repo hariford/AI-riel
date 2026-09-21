@@ -1,0 +1,15 @@
+node_modules/
+dist/
+out/
+release/
+coverage/
+.turbo/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
+*.tsbuildinfo

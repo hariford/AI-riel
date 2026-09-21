@@ -1,0 +1,42 @@
+{
+  "name": "@airiel/desktop",
+  "productName": "AI'riel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI'riel — AI coding assistant for company developers",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "preview": "electron-vite preview",
+    "package": "electron-vite build && electron-builder --win --publish never"
+  },
+  "dependencies": {
+    "@airiel/agent-core": "workspace:*",
+    "@airiel/protocol": "workspace:*",
+    "@airiel/tools": "workspace:*",
+    "@azure/msal-node": "^3.7.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.46.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "electron": "^38.1.2",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^4.0.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.7",
+    "vitest": "^3.2.4"
+  }
+}

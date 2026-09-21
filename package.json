@@ -1,0 +1,27 @@
+{
+  "name": "airiel",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "AI'riel — in-house AI coding assistant powered by Azure AI Foundry",
+  "packageManager": "pnpm@12.5.1",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "turbo run typecheck",
+    "dev:desktop": "pnpm --filter @airiel/desktop dev",
+    "dev:gateway": "pnpm --filter @airiel/gateway dev"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^3.2.4"
+  }
+}

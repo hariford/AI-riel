@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --panel: #161a22;
+  --panel-2: #1d222c;
+  --border: #2a303c;
+  --text: #e6e8ee;
+  --muted: #8b93a7;
+  --accent: #7c9cff;
+  --accent-2: #5f7ff0;
+  --ok: #4cc38a;
+  --warn: #f5a524;
+  --danger: #f26d6d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+}
+
+code,
+pre {
+  font-family: 'Cascadia Code', 'Cascadia Mono', Consolas, monospace;
+  font-size: 12.5px;
+}
+
+.prose pre {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+.prose code {
+  background: var(--panel-2);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+}
+.prose p {
+  margin: 0.4em 0;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+  margin: 0.4em 0;
+}
+.prose h1,
+.prose h2,
+.prose h3 {
+  margin: 0.8em 0 0.3em;
+  font-weight: 600;
+}
+.prose table {
+  border-collapse: collapse;
+}
+.prose td,
+.prose th {
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+}
+
+.diff-add {
+  color: var(--ok);
+  background: rgba(76, 195, 138, 0.08);
+}
+.diff-del {
+  color: var(--danger);
+  background: rgba(242, 109, 109, 0.08);
+}
+.diff-hunk {
+  color: var(--accent);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 6px;
+}

@@ -1,0 +1,21 @@
+appId: com.company.airiel
+productName: AI'riel
+directories:
+  output: release
+files:
+  - out/**
+  - package.json
+asarUnpack:
+  - "**/@vscode/ripgrep/bin/**"
+win:
+  target:
+    - nsis
+  # Code signing: set CSC_LINK / CSC_KEY_PASSWORD in CI (Phase 6).
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+publish:
+  # electron-updater feed on Azure Blob Storage (Phase 6).
+  provider: generic
+  url: https://REPLACE_ME.blob.core.windows.net/airiel-releases
