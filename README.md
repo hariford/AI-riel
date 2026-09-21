@@ -33,6 +33,7 @@ pnpm dev
 # Or separately: pnpm dev:gateway / pnpm dev:desktop.
 # With no Entra client id configured the desktop runs as a local dev user against http://localhost:8080.
 # AIRIEL_WORKSPACE=<path> preselects the folder to open; otherwise the last folder is remembered.
+# Voice: hold the mic button (or Ctrl+Shift+Space) and speak; release to stop. Uses the Foundry resource's Speech service.
 ```
 
 See `docs/ONBOARDING.md` for Azure setup (Foundry, Entra, Speech) and `docs/PROJECT-PLAN.md` for the roadmap.
