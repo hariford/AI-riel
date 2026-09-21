@@ -202,6 +202,15 @@ importers:
       '@azure/msal-node':
         specifier: ^3.7.0
         version: 3.8.10
+      '@vscode/ripgrep':
+        specifier: ^1.15.14
+        version: 1.18.0
+      diff:
+        specifier: ^8.0.2
+        version: 8.0.4
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       microsoft-cognitiveservices-speech-sdk:
         specifier: ^1.46.0
         version: 1.51.0(supports-color@7.2.0)

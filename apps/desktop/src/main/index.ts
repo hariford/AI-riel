@@ -77,7 +77,7 @@ function registerIpc(): void {
     host.respondToPermission(String(requestId), PermissionDecisionSchema.parse(decision)),
   );
   ipcMain.handle(IPC.permissionSetMode, (_e, mode: unknown) => host.setPermissionMode(PermissionModeSchema.parse(mode)));
-  ipcMain.handle('agent:undo', () => host.undoLastTurn());
+  ipcMain.handle(IPC.agentUndo, () => host.undoLastTurn());
 
   ipcMain.handle(IPC.speechToken, async () => {
     const token = await auth.getAccessToken();

@@ -164,6 +164,7 @@ export const IPC = {
   conversationNew: 'conversation:new',
   agentSend: 'agent:send',
   agentCancel: 'agent:cancel',
+  agentUndo: 'agent:undo',
   agentEvent: 'agent:event',
   permissionRespond: 'permission:respond',
   permissionSetMode: 'permission:set-mode',

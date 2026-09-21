@@ -3,6 +3,7 @@ import { loadConfig } from './config.js';
 
 const cfg = loadConfig();
 const app = await buildApp({ cfg });
+if (!cfg.FOUNDRY_ENDPOINT) app.log.warn('FOUNDRY_ENDPOINT is empty: chat requests will fail until Azure AI Foundry is configured');
 
 const shutdown = async (signal: string) => {
   app.log.info({ signal }, 'shutting down');

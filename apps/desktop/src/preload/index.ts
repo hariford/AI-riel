@@ -20,7 +20,7 @@ const api: AirielApi = {
   agent: {
     send: (conversationId, text) => ipcRenderer.invoke(IPC.agentSend, conversationId, text),
     cancel: (conversationId) => ipcRenderer.invoke(IPC.agentCancel, conversationId),
-    undoLastTurn: () => ipcRenderer.invoke('agent:undo'),
+    undoLastTurn: () => ipcRenderer.invoke(IPC.agentUndo),
     respondToPermission: (requestId, decision) => ipcRenderer.invoke(IPC.permissionRespond, requestId, decision),
     setPermissionMode: (mode) => ipcRenderer.invoke(IPC.permissionSetMode, mode),
     onEvent: (handler) => {

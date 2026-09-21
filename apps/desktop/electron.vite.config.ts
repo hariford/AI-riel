@@ -3,13 +3,17 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 
+// Workspace packages ship ESM only, while the Electron main/preload bundles are CommonJS,
+// so they are bundled in. Their npm dependencies stay external and are declared below.
+const externals = externalizeDepsPlugin({ exclude: ['@airiel/protocol', '@airiel/agent-core', '@airiel/tools'] });
+
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externals],
     build: { rollupOptions: { input: resolve(__dirname, 'src/main/index.ts') } },
   },
   preload: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externals],
     build: { rollupOptions: { input: resolve(__dirname, 'src/preload/index.ts') } },
   },
   renderer: {

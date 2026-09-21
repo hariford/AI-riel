@@ -98,17 +98,26 @@ function usageOf(chunk: ChatCompletionChunk) {
   };
 }
 
+export const FOUNDRY_NOT_CONFIGURED =
+  'The gateway has no model endpoint configured (FOUNDRY_ENDPOINT). Ask an administrator to configure Azure AI Foundry.';
+
 export function createFoundryClient(cfg: Config): FoundryClient {
-  const client = cfg.FOUNDRY_API_KEY
-    ? new AzureOpenAI({ endpoint: cfg.FOUNDRY_ENDPOINT, apiKey: cfg.FOUNDRY_API_KEY, apiVersion: cfg.FOUNDRY_API_VERSION })
-    : new AzureOpenAI({
-        endpoint: cfg.FOUNDRY_ENDPOINT,
-        apiVersion: cfg.FOUNDRY_API_VERSION,
-        azureADTokenProvider: getBearerTokenProvider(
-          new DefaultAzureCredential(),
-          'https://cognitiveservices.azure.com/.default',
-        ),
-      });
+  // Created on first use so the gateway can start (health, config) before Foundry is provisioned.
+  let client: AzureOpenAI | undefined;
+  const getClient = (): AzureOpenAI => {
+    if (!cfg.FOUNDRY_ENDPOINT) throw new Error(FOUNDRY_NOT_CONFIGURED);
+    client ??= cfg.FOUNDRY_API_KEY
+      ? new AzureOpenAI({ endpoint: cfg.FOUNDRY_ENDPOINT, apiKey: cfg.FOUNDRY_API_KEY, apiVersion: cfg.FOUNDRY_API_VERSION })
+      : new AzureOpenAI({
+          endpoint: cfg.FOUNDRY_ENDPOINT,
+          apiVersion: cfg.FOUNDRY_API_VERSION,
+          azureADTokenProvider: getBearerTokenProvider(
+            new DefaultAzureCredential(),
+            'https://cognitiveservices.azure.com/.default',
+          ),
+        });
+    return client;
+  };
 
   const deploymentFor = (m: 'default' | 'small') =>
     m === 'small' ? cfg.FOUNDRY_DEPLOYMENT_SMALL : cfg.FOUNDRY_DEPLOYMENT_DEFAULT;
@@ -117,7 +126,7 @@ export function createFoundryClient(cfg: Config): FoundryClient {
     deploymentFor,
     async *stream(req) {
       const tools = toOpenAiTools(req.tools);
-      const completion = await client.chat.completions.create(
+      const completion = await getClient().chat.completions.create(
         {
           model: deploymentFor(req.model),
           messages: toOpenAiMessages(req.messages),
