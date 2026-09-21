@@ -31,7 +31,7 @@ export function Composer({ disabled, running, mode, onModeChange, onSend, onCanc
   return (
     <div className="border-t border-[var(--border)] bg-[var(--panel)] px-4 py-3">
       <div className="mx-auto max-w-4xl">
-        <div className="flex items-end gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-2 focus-within:border-[var(--accent)]">
+        <div className="relative flex items-end gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-2 focus-within:border-[var(--accent)]">
           <textarea
             ref={inputRef}
             autoFocus

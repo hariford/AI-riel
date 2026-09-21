@@ -36,13 +36,11 @@ export function VoiceButton({ onPartial, onFinal, phrases = [], disabled }: Prop
     setError(null);
     try {
       const { token, region, host } = await window.airiel.speech.token();
-      let config: sdk.SpeechConfig;
-      if (host) {
-        config = sdk.SpeechConfig.fromHost(new URL(`wss://${host}`));
-        config.authorizationToken = token;
-      } else {
-        config = sdk.SpeechConfig.fromAuthorizationToken(token, region);
-      }
+      // AI Services / Foundry custom domains only accept the endpoint form; fromHost fails to connect.
+      const config = host
+        ? sdk.SpeechConfig.fromEndpoint(new URL(`https://${host}`))
+        : sdk.SpeechConfig.fromAuthorizationToken(token, region);
+      config.authorizationToken = token;
       config.speechRecognitionLanguage = 'en-AU';
       const audio = sdk.AudioConfig.fromDefaultMicrophoneInput();
       const r = new sdk.SpeechRecognizer(config, audio);
@@ -55,7 +53,10 @@ export function VoiceButton({ onPartial, onFinal, phrases = [], disabled }: Prop
         if (e.result.reason === sdk.ResultReason.RecognizedSpeech && e.result.text) onFinal(e.result.text);
       };
       r.canceled = (_s, e) => {
-        if (e.reason === sdk.CancellationReason.Error) setError(e.errorDetails);
+        if (e.reason === sdk.CancellationReason.Error) {
+          console.error('[voice] cancelled', e.errorCode, e.errorDetails);
+          setError(`Speech failed: ${e.errorDetails}`);
+        }
         stop();
       };
       recognizer.current = r;
@@ -65,6 +66,7 @@ export function VoiceButton({ onPartial, onFinal, phrases = [], disabled }: Prop
         stop();
       });
     } catch (err) {
+      console.error('[voice] start failed', err);
       setError((err as Error).message);
     }
   }, [disabled, phrases, onPartial, onFinal, stop]);
@@ -89,7 +91,7 @@ export function VoiceButton({ onPartial, onFinal, phrases = [], disabled }: Prop
   }, [start, stop]);
 
   return (
-    <div className="flex items-center gap-2">
+    <>
       <button
         type="button"
         title="Hold to talk (Ctrl+Shift+Space)"
@@ -103,7 +105,11 @@ export function VoiceButton({ onPartial, onFinal, phrases = [], disabled }: Prop
       >
         🎙️
       </button>
-      {error && <span className="text-xs text-[var(--danger)]">{error}</span>}
-    </div>
+      {error && (
+        <div role="alert" className="absolute inset-x-0 -top-8 mx-auto w-fit max-w-full truncate rounded-md bg-[var(--danger)]/15 px-3 py-1 text-xs text-[var(--danger)]">
+          {error}
+        </div>
+      )}
+    </>
   );
 }

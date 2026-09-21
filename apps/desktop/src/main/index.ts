@@ -1,4 +1,4 @@
-import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron';
+import { BrowserWindow, app, dialog, ipcMain, session, shell } from 'electron';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { IPC, PermissionDecisionSchema, PermissionModeSchema, type AgentEvent } from '@airiel/protocol';
@@ -114,6 +114,12 @@ function registerIpc(): void {
 }
 
 app.whenReady().then(() => {
+  // Voice input needs the microphone; nothing else in the renderer needs a permission.
+  session.defaultSession.setPermissionRequestHandler((_wc, permission, callback, details) => {
+    const mediaTypes = (details as { mediaTypes?: string[] }).mediaTypes ?? [];
+    callback(permission === 'media' && mediaTypes.every((t) => t === 'audio'));
+  });
+  session.defaultSession.setPermissionCheckHandler((_wc, permission) => permission === 'media');
   restoreWorkspace();
   registerIpc();
   createWindow();
