@@ -106,6 +106,8 @@ export type ChatStreamEvent = z.infer<typeof ChatStreamEventSchema>;
 export const SpeechTokenResponseSchema = z.object({
   token: z.string(),
   region: z.string(),
+  /** Custom-domain host (AI Services / Foundry resource). When present the client connects via host, not region. */
+  host: z.string().optional(),
   expiresAt: z.string().datetime(),
 });
 export type SpeechTokenResponse = z.infer<typeof SpeechTokenResponseSchema>;

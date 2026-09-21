@@ -29,9 +29,13 @@ export const ConfigSchema = z.object({
   FOUNDRY_DEPLOYMENT_SMALL: z.string().default('gpt-4.1-mini'),
   FOUNDRY_CONTEXT_WINDOW: z.coerce.number().int().default(128_000),
 
-  // Azure Speech
+  // Azure Speech. Either a standalone Speech resource (SPEECH_REGION + SPEECH_KEY), or the
+  // Foundry / AI Services resource itself, which includes Speech: leave SPEECH_KEY empty and the
+  // Foundry key is used against SPEECH_ENDPOINT (derived from FOUNDRY_ENDPOINT when empty).
   SPEECH_REGION: z.string().default(''),
   SPEECH_KEY: z.string().default(''),
+  /** Custom-domain endpoint, e.g. https://<resource>.cognitiveservices.azure.com */
+  SPEECH_ENDPOINT: z.string().default(''),
 
   // Usage store
   SQL_CONNECTION_STRING: z.string().default(''),

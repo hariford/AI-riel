@@ -5,7 +5,7 @@ import { createAuthenticator } from './auth.js';
 import type { Config } from './config.js';
 import { createFoundryClient, type FoundryClient } from './foundry.js';
 import { registerChatRoute } from './routes/chat.js';
-import { createSpeechTokenIssuer, registerSpeechRoute, type SpeechTokenIssuer } from './routes/speech.js';
+import { createSpeechTokenIssuer, registerSpeechRoute, resolveSpeechTarget, type SpeechTokenIssuer } from './routes/speech.js';
 import { registerUsageRoutes } from './routes/usage.js';
 import { MemoryUsageStore, SqlUsageStore, type UsageStore } from './usage-store.js';
 
@@ -37,7 +37,7 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   app.get('/v1/config', { preHandler: createAuthenticator(cfg) }, async (req) => ({
     user: { id: req.user.id, name: req.user.name, email: req.user.email, isAdmin: req.user.isAdmin },
     contextWindowTokens: cfg.FOUNDRY_CONTEXT_WINDOW,
-    speechEnabled: Boolean(cfg.SPEECH_REGION && cfg.SPEECH_KEY),
+    speechEnabled: resolveSpeechTarget(cfg) !== null,
     dailyTokenBudget: cfg.DAILY_TOKEN_BUDGET,
   }));
 

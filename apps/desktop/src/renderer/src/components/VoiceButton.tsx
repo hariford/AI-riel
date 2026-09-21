@@ -35,8 +35,14 @@ export function VoiceButton({ onPartial, onFinal, phrases = [], disabled }: Prop
     if (recognizer.current || disabled) return;
     setError(null);
     try {
-      const { token, region } = await window.airiel.speech.token();
-      const config = sdk.SpeechConfig.fromAuthorizationToken(token, region);
+      const { token, region, host } = await window.airiel.speech.token();
+      let config: sdk.SpeechConfig;
+      if (host) {
+        config = sdk.SpeechConfig.fromHost(new URL(`wss://${host}`));
+        config.authorizationToken = token;
+      } else {
+        config = sdk.SpeechConfig.fromAuthorizationToken(token, region);
+      }
       config.speechRecognitionLanguage = 'en-AU';
       const audio = sdk.AudioConfig.fromDefaultMicrophoneInput();
       const r = new sdk.SpeechRecognizer(config, audio);

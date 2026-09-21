@@ -105,7 +105,10 @@ function registerIpc(): void {
   ipcMain.handle(IPC.speechToken, async () => {
     const token = await auth.getAccessToken();
     const res = await fetch(`${cfg.gatewayUrl}/v1/speech/token`, { headers: { authorization: `Bearer ${token}` } });
-    if (!res.ok) throw new Error(`Speech token failed: ${res.status}`);
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(body.error ?? `Speech token failed: ${res.status}`);
+    }
     return res.json();
   });
 }
