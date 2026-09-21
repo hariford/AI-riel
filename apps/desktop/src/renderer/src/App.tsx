@@ -22,8 +22,11 @@ export function App() {
     void (async () => {
       setUser(await window.airiel.auth.getUser());
       setAuthChecked(true);
-      setWorkspace(await window.airiel.workspace.get());
+      const ws = await window.airiel.workspace.get();
+      setWorkspace(ws);
       await refreshConversations();
+      // A restored workspace should be ready to chat without an extra click.
+      if (ws) setActiveId(await window.airiel.conversations.create());
     })();
   }, [refreshConversations]);
 

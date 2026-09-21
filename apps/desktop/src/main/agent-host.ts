@@ -99,13 +99,13 @@ export class AgentHost {
       const gen = loop.run({ conversationId, messages, signal: abort.signal });
       let r = await gen.next();
       while (!r.done) {
-        this.deps.emit(conversationId, r.value);
+        // turn_done is emitted below, once the conversation is saved, so the renderer's refresh sees it.
+        if (r.value.type !== 'turn_done') this.deps.emit(conversationId, r.value);
         r = await gen.next();
       }
       finalMessages = r.value.messages;
     } catch (err) {
       this.deps.emit(conversationId, { type: 'error', message: (err as Error).message });
-      this.deps.emit(conversationId, { type: 'turn_done' });
     } finally {
       this.running.delete(conversationId);
     }
@@ -117,7 +117,12 @@ export class AgentHost {
       updatedAt: new Date().toISOString(),
       messages: finalMessages.filter((m) => m.role !== 'system'),
     };
-    await this.deps.store.save(conv);
+    try {
+      await this.deps.store.save(conv);
+    } catch (err) {
+      this.deps.emit(conversationId, { type: 'error', message: `Could not save conversation: ${(err as Error).message}` });
+    }
+    this.deps.emit(conversationId, { type: 'turn_done' });
   }
 
   private prompt(conversationId: string, req: PermissionRequest): Promise<PermissionDecision> {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PermissionMode } from '@airiel/protocol';
 import { VoiceButton } from './VoiceButton';
 
@@ -14,6 +14,12 @@ interface Props {
 export function Composer({ disabled, running, mode, onModeChange, onSend, onCancel }: Props) {
   const [text, setText] = useState('');
   const [partial, setPartial] = useState('');
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Keep the keyboard on the composer: on open, when a folder becomes available, and after each turn.
+  useEffect(() => {
+    if (!disabled && !running) inputRef.current?.focus();
+  }, [disabled, running]);
 
   const submit = useCallback(() => {
     const t = text.trim();
@@ -27,6 +33,8 @@ export function Composer({ disabled, running, mode, onModeChange, onSend, onCanc
       <div className="mx-auto max-w-4xl">
         <div className="flex items-end gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-2 focus-within:border-[var(--accent)]">
           <textarea
+            ref={inputRef}
+            autoFocus
             className="max-h-48 min-h-[44px] flex-1 resize-none bg-transparent px-2 py-1.5 outline-none placeholder:text-[var(--muted)]"
             placeholder={disabled ? 'Open a folder to start' : 'Ask AI\'riel… (Enter to send, Shift+Enter for newline)'}
             value={partial ? `${text}${text && !text.endsWith(' ') ? ' ' : ''}${partial}` : text}

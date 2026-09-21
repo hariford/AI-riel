@@ -15,19 +15,24 @@ infra/              Bicep (Foundry, Container Apps, SQL, Speech, App Insights) +
 docs/               Project plan, ADRs, onboarding
 ```
 
-## Quick start (local, no Azure yet)
+![AI'riel chat answering a question about this repo](docs/screenshots/chat.png)
+
+## Quick start (local)
 
 ```powershell
 pnpm install
 pnpm build
 pnpm test
 
-# Terminal 1 — gateway in dev mode (fake auth, in-memory usage). Needs a Foundry endpoint to answer.
-cd services/gateway; copy .env.example .env; pnpm dev
+# One-time: gateway settings (Foundry endpoint, key, deployment names). Never commit .env.
+copy servicesgateway.env.example servicesgateway.env   # then edit it
 
-# Terminal 2 — desktop
-$env:AIRIEL_AUTH_DISABLED = 'true'; $env:AIRIEL_GATEWAY_URL = 'http://localhost:8080'
-pnpm dev:desktop
+# Start gateway (dev auth, in-memory usage) and the desktop app together
+pnpm dev
+
+# Or separately: pnpm dev:gateway / pnpm dev:desktop.
+# With no Entra client id configured the desktop runs as a local dev user against http://localhost:8080.
+# AIRIEL_WORKSPACE=<path> preselects the folder to open; otherwise the last folder is remembered.
 ```
 
 See `docs/ONBOARDING.md` for Azure setup (Foundry, Entra, Speech) and `docs/PROJECT-PLAN.md` for the roadmap.

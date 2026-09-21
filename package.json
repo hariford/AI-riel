@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "turbo run typecheck",
+    "dev": "turbo run dev --filter=@airiel/gateway --filter=@airiel/desktop",
     "dev:desktop": "pnpm --filter @airiel/desktop dev",
     "dev:gateway": "pnpm --filter @airiel/gateway dev"
   },

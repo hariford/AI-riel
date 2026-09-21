@@ -1,4 +1,5 @@
 import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { IPC, PermissionDecisionSchema, PermissionModeSchema, type AgentEvent } from '@airiel/protocol';
 import { AgentHost, createProvider } from './agent-host.js';
@@ -11,6 +12,28 @@ const auth = new AuthService(cfg);
 const store = new JsonConversationStore(path.join(app.getPath('userData'), 'conversations'));
 
 let win: BrowserWindow | null = null;
+
+/** Small persisted UI state (last workspace). Conversations live in their own store. */
+const settingsFile = path.join(app.getPath('userData'), 'settings.json');
+function readSettings(): { lastWorkspace?: string } {
+  try {
+    return JSON.parse(readFileSync(settingsFile, 'utf8')) as { lastWorkspace?: string };
+  } catch {
+    return {};
+  }
+}
+function writeSettings(s: { lastWorkspace?: string }): void {
+  mkdirSync(path.dirname(settingsFile), { recursive: true });
+  writeFileSync(settingsFile, JSON.stringify(s), 'utf8');
+}
+function openWorkspace(root: string): void {
+  host.setWorkspace(root);
+  writeSettings({ ...readSettings(), lastWorkspace: root });
+}
+function restoreWorkspace(): void {
+  const candidate = process.env['AIRIEL_WORKSPACE'] ?? readSettings().lastWorkspace;
+  if (candidate && existsSync(candidate)) host.setWorkspace(candidate);
+}
 
 const host = new AgentHost({
   provider: createProvider(cfg.gatewayUrl, () => auth.getAccessToken()),
@@ -57,7 +80,7 @@ function registerIpc(): void {
   ipcMain.handle(IPC.workspacePick, async () => {
     const r = await dialog.showOpenDialog(win!, { properties: ['openDirectory'], title: 'Open a working directory' });
     if (r.canceled || !r.filePaths[0]) return null;
-    host.setWorkspace(r.filePaths[0]);
+    openWorkspace(r.filePaths[0]);
     return r.filePaths[0];
   });
   ipcMain.handle(IPC.workspaceGet, () => host.workspaceRoot);
@@ -88,6 +111,7 @@ function registerIpc(): void {
 }
 
 app.whenReady().then(() => {
+  restoreWorkspace();
   registerIpc();
   createWindow();
   app.on('activate', () => {

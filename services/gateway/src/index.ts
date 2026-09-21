@@ -1,5 +1,9 @@
+import { existsSync } from 'node:fs';
 import { buildApp } from './app.js';
 import { loadConfig } from './config.js';
+
+// Local development: read services/gateway/.env if present. Real environments set variables directly.
+if (existsSync('.env')) process.loadEnvFile('.env');
 
 const cfg = loadConfig();
 const app = await buildApp({ cfg });
